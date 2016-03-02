@@ -1,0 +1,22 @@
+I=imread('Blue Drawn Line.jpg');
+<<<<<<< HEAD:test.m
+
+red = I(:,:,1); % Red channel
+green = I(:,:,2); % Green channel
+blue = I(:,:,3); % Blue channel
+
+
+BW = im2bw(blue, .5);
+
+spy(BW)
+=======
+
+red = I(:,:,1); % Red channel
+green = I(:,:,2); % Green channel
+blue = I(:,:,3); % Blue channel
+
+
+BW = im2bw(blue, .5);
+
+spy(BW)
+>>>>>>> e50e5c4a552a64c2d687a71a2bb7ae245c2a68cf:basiclinefinder
