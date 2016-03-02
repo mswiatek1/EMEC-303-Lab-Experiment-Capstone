@@ -15,12 +15,15 @@ end
 
 % Open Video, Collect info from the file
 vid = VideoReader(filename);
-read(vid, Inf);
-LastFrame = vid.NumberOfFrames; % Total number of frames in the video
+% while hasFrame(vid)
+v= readFrame(vid);
+% end
+%whos v;
+LastTime = vid.Duration; % Total time of video
 vidHeight = vid.Height; % Height in Pixels
 vidWidth = vid.Width; % Width in Pixels
-
-mid = read(vid,LastFrame/2); % Middle frame in video for analyzing
+vid.CurrentTime = LastTime/2;
+mid = readFrame(vid); % Reads the frame at the middle timestep in video for analyzing
 %imshow(mid)
 size(mid);
 level = graythresh(mid); % Threshold level for black/ white
@@ -52,7 +55,7 @@ while button ~= 4
         grid on;
     elseif button == 2 % Calibration
         Prompt = {'Enter True Size','Enter Units'};
-        defaultVals = {'5','Miles'};
+        defaultVals = {'5','Feet'};
         UserInput = inputdlg(Prompt,'Enter a known distance',2,defaultVals);
         if isempty(UserInput)
             return
