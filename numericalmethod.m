@@ -53,7 +53,7 @@ for i=1:N-1
     a2(i)=(v2(i)-v2(i+1))/tstep;
 end
 
-figure(1)
+figure(2)
 subplot(3,1,1)
 plot(x,y)
 subplot(3,1,2)
@@ -76,7 +76,7 @@ for i=1:N-1
     a3(i)=(v3(i)-v3(i+1))/tstep;
 end
 
-figure(1)
+figure(3)
 subplot(3,1,1)
 plot(x,y)
 subplot(3,1,2)
@@ -101,7 +101,7 @@ for i=1:N-1
     a4(i)=(v4(i)-v4(i+1))/tstep;
 end
 
-figure(1)
+figure(4)
 subplot(3,1,1)
 plot(x,y)
 subplot(3,1,2)
