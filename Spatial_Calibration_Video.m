@@ -41,7 +41,7 @@ Calibration = 1.0;
 button = 1;
 while button ~= 4
     % User input of required action
-    button = menu('Pick One','Measure','Calibrate','Automatic A in Dr. Owkes Class','Exit');
+    button = menu('Pick One','Measure','Calibrate','Automatic A in Dr. Owkes Class','Finish');
     if button == 4 % EXIT
         break; % End because user clicked exit
     elseif button == 1 % Measure

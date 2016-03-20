@@ -30,7 +30,7 @@ for i = 1:LastFrame-1
     currentFrame = readFrame(vid);
     level = graythresh(currentFrame); % Threshold level for black/ white
     BWvid(:,:,i) = im2bw(currentFrame,level); % Convert image to black and white (binary)
-    BW2vid(:,:,i) = bwareaopen(BWvid(:,:,i),1000);
+    BW2vid(:,:,i) = bwareaopen(BWvid(:,:,i),500);
 end
 
     background = imdilate(BW2vid, ones(1,1,100));
