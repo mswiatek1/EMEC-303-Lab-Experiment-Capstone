@@ -22,17 +22,19 @@ mid = readFrame(vid); % Reads the frame at the middle timestep in video for anal
 
 readpix = impixel(mid);
 red = readpix(1); % Red value
-green = readpix(3); % Green Value
-blue = readpix(2); % Blue value
+green = readpix(2); % Green Value
+blue = readpix(3); % Blue value
 
-p = .05;
+%
+p = 0.2;
 rdiff = p*red; % Red
 gdiff = p*green; % Green
 bdiff = p*blue; % Blue
-% vid.CurrentTime = 
-trackedObj = ones(vidHeight,vidWidth,LastFrame);
+vid.CurrentTime = LastTime/2; % Rewind
+LastFrame=floor(LastFrame/10);
+trackedObj = zeros(vidHeight,vidWidth,LastFrame);
 [m, n, q] = size(trackedObj);
-for i = LastFrame-1
+for i = 1:LastFrame-1
     currentFrame = readFrame(vid);
     redchan = currentFrame(:,:,1); % Red Channel
     greenchan = currentFrame(:,:,2); % Green Channel
@@ -40,17 +42,23 @@ for i = LastFrame-1
     
     for j = 1:m
         for k = 1:n
-            if redchan(j,k) <= red+rdiff && redchan(j,k) >= red-rdiff && ...
-               greenchan(j,k) <= green+gdiff && greenchan(j,k) >= green-gdiff && ...     
-               bluechan(j,k) <= blue+bdiff && bluechan(j,k) >= blue-bdiff 
+            if (redchan(j,k) <= red+rdiff && redchan(j,k) >= red-rdiff && ...
+                greenchan(j,k) <= green+gdiff && greenchan(j,k) >= green-gdiff && ...     
+                bluechan(j,k) <= blue+bdiff && bluechan(j,k) >= blue-bdiff)
 
-                trackedObj(j,k) = 1;
+                trackedObj(j,k,i) = 1;
             else
-                trackedObj(j,k) = 0;
+                trackedObj(j,k,i) = 0;
             end
         end
     end
     
+    figure(1); clf(1)
+    subplot(2,1,1)
+    imshow(currentFrame)
+    subplot(2,1,2)
+    imshow(trackedObj(:,:,i))
+    pause
     
 end
         
