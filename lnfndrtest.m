@@ -26,7 +26,7 @@ bluecolor=ones(m,n);
 for i=1:m
     for j=1:n
 
-if red(i,j) <=75 && green(i,j) <= 110 && blue(i,j) <=140
+if red(i,j) <=75 && green(i,j) <= 110 && blue(i,j) <=140 && red(i,j) >=30 && green(i,j) >= 30 && blue(i,j) >=30
     bluecolor(i,j)=1;
 else
     bluecolor(i,j)=0;
