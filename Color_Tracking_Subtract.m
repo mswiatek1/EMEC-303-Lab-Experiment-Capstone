@@ -27,6 +27,7 @@ figure(1); clf(1)
     imshow(mid)
     subplot(2,1,2)
     imshow(mid-last)
+     uiwait(msgbox('Zoom into the area of intereston the bottom image, press enter, click on the desired pixel, then press enter again','','modal'));
 pause
 hold on
 readpix = impixel(mid-last);
@@ -36,7 +37,7 @@ green = readpix(2); % Green Value
 blue = readpix(3); % Blue value
 
 %
-p = 0.4;
+p = 0.35;
 rdiff = p*red; % Red
 gdiff = p*green; % Green
 bdiff = p*blue; % Blue
@@ -70,7 +71,7 @@ newrgb = zeros(vidHeight,vidWidth,LastFrame);
 
 for i = 1:q-1
     
-    currentFrame = readFrame(vid)-last; %- FirstFrame;
+    currentFrame = readFrame(vid) -last;%- FirstFrame;
      redchan = currentFrame(:,:,1); % Red Channel
      greenchan = currentFrame(:,:,2); % Green Channel
      bluechan = currentFrame(:,:,3); % Blue Channel
@@ -93,15 +94,37 @@ for i = 1:q-1
         end
     end
     
-    figure(2); clf(2)
-    subplot(2,1,1)
-    imshow(currentFrame)
-    subplot(2,1,2)
-    imshow(trackedObj(:,:,i))
-    pause
+%     figure(2); clf(2)
+%     subplot(2,1,1)
+%     imshow(currentFrame)
+%     subplot(2,1,2)
+%     imshow(trackedObj(:,:,i))
+%     pause
     
 end
-        
+
+% Find Centroids in each frame
+% for i = 1:q-1
+%     i
+%     
+%    s = regionprops(trackedObj,'centroid');
+%    centroids = cat(1, s.Centroid);
+%    figure(2); clf(2);
+%    imshow(trackedObj(:,:,i));
+%    hold on
+%    plot(centroids(:,1,i),centroids(:,2,i),'b*')
+%    hold off
+% 
+% end
+
+
+
+
+
+
+
+
+
         
         
         

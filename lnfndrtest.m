@@ -1,6 +1,16 @@
 clc;clear all;clf;close all;
-I=imread('Track Shape 2.jpg');
-imshow('Track Shape 2.jpg');
+
+% Import video file of interest
+filename= uigetfile({'*.*'},'Select the desired video file');
+if isequal(filename,0)
+    fprintf('No file was selected \n')
+else
+    fprintf('%s was selected \n',filename)
+end
+
+
+I=imread(filename);
+imshow(filename);
  uiwait(msgbox('Click a point left of the track THEN click a point right of the track','','modal'));
      [x,y]=ginput(2);
 a=x(1)
@@ -26,7 +36,7 @@ bluecolor=ones(m,n);
 for i=1:m
     for j=1:n
 
-if red(i,j) <=75 && green(i,j) <= 110 && blue(i,j) <=140 && red(i,j) >=30 && green(i,j) >= 30 && blue(i,j) >=30
+if red(i,j) <=75 && green(i,j) <= 110 && blue(i,j) <=140 % && red(i,j) >=30 && green(i,j) >= 30 && blue(i,j) >=30
     bluecolor(i,j)=1;
 else
     bluecolor(i,j)=0;
