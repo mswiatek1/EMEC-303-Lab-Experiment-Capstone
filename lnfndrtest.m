@@ -1,5 +1,5 @@
-clc;clear all;clf;close all;
 
+clc;clf;close all;
 % Import video file of interest
 filename= uigetfile({'*.*'},'Select the desired video file');
 if isequal(filename,0)
@@ -8,50 +8,66 @@ else
     fprintf('%s was selected \n',filename)
 end
 
-
-I=imread(filename);
+bpoint=imread(filename);
 imshow(filename);
  uiwait(msgbox('Click a point left of the track THEN click a point right of the track','','modal'));
-     [x,y]=ginput(2);
-a=x(1)
-b=x(2) 
+     [x,~]=ginput(2);
+a=x(1); 
+b=x(2) ;
 uiwait(msgbox('Click a point above the top of the track THEN click a point below the bottom of the track','','modal'));
-     [x,y]=ginput(2);
-        c=y(1)
-        d=y(2)
+     [~,y]=ginput(2);
+        c=y(1);
+        d=y(2);
+        
+ xmin=a;
+ ymin=c;
+ width=(b-a);
+ height=(d-c);
+I2=imcrop(bpoint,[xmin ymin width height]);
 
- xmin=a
- ymin=c
- width=(b-a)
- height=(d-c)
-I2=imcrop(I,[xmin ymin width height]);
-
-
-red = I2(:,:,1); % Red channel
-green = I2(:,:,2); % Green channel
-blue = I2(:,:,3); % Blue channel
+I3=imadjust(I2,[.2 .3 0; .6 .7 1],[]);
+red = I3(:,:,1); % Red channel
+green = I3(:,:,2); % Green channel
+blue = I3(:,:,3); % Blue channel
 [m,n,p]=size(I2);
 
-bluecolor=ones(m,n);
+% figure(1); clf(1);
+% imshow(I2);
+%      uiwait(msgbox('Click the "lightest" suction cup for color analysis and then press enter','','modal'));
+% readpix = impixel(I2);
+% blackr = readpix(1); % Red value of black pixel
+% blackg = readpix(2); % Green Value of plack pixel
+% blackb = readpix(3); % Blue value of black pixel
+
+bluecolor=zeros(m,n);
+
+
+
+
+
 for i=1:m
     for j=1:n
-
-if red(i,j) <=75 && green(i,j) <= 110 && blue(i,j) <=140 % && red(i,j) >=30 && green(i,j) >= 30 && blue(i,j) >=30
-    bluecolor(i,j)=1;
+        if  blue(i,j) >=60 && red(i,j) <=10 && green(i,j) <=10
+            bluecolor(i,j)=1;
 else
     bluecolor(i,j)=0;
-end
+        end
     end
 end
-x=[1:n];
+
+
+x=1:n;
 for i=1:n
  a=bluecolor(:,i);
- index=find(a);
-b=index(1);
- e=index(end);
- y(i)=((b+e)/2);
-
+ bpoint=find(a);
+top=bpoint(1);
+bottom=bpoint(end);
+ y(i)=((top+bottom)/2);
 end
+spy(bluecolor)
+ 
+%  [Ix,Iy]=find(bluecolor)
+
 figure(1)
 scatter(x,-y,'.')
 axis([0,n,-m,0]);
