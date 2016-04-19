@@ -158,12 +158,16 @@ for i=2:q-2 % loop to find (0,0) centroids and readjust them through linear inte
         y(i)=abs((y(i-1)-y(i+1))/2); % new y value
     end
 end
-j=10; % adjust value to negate 0 values at begining/end of clip
-xc=x(4*j:q-j); % adjusted x values
-yc=y(4*j:q-j); % adjusted y values
+for i=1:q-1 % loop to cancel out any remaining (0,0) 
+    if x(i)==0 % checks if x is 0
+       x(i)=NaN; % deletes x
+    end
+    if y(i)==0 % checks if y is 0
+       y(i)=NaN; % deletes y
+    end
+end
 
 % Convert from camera pixels to units selected previously
-
 newx = Calibration*xc;
 newy = -Calibration*yc;
 [a, b] = size(newx);
