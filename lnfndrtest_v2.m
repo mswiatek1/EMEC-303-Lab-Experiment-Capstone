@@ -63,11 +63,11 @@ for i = 1:n
     end
 end
 
-% for i=2:n-2 % loop to find (0,0) centroids and readjust them through linear interpolation
-%     if y(i) == 0
-%        y(i)=abs((y(i-1)-y(i+1))/2); % new y value
-%     end
-% end
+for i=1:n-1 % loop to find (0,0) centroids and readjust them through linear interpolation
+    if y(i) == 0
+       y(i) = NaN; % new y value
+    end
+end
 
 
 figure(2); clf(2);
