@@ -19,20 +19,25 @@ vidWidth = vid.Width; % Width in Pixels
 vid.CurrentTime = LastTime/2;
 LastFrame = floor(LastTime*vid.FrameRate);
 mid = readFrame(vid); % Reads the frame at the middle timestep in video for analyzing
+vid.currentTime = LastTime-(LastTime/vid.FrameRate);
+last = readFrame(vid);
 
-figure(1); clf(1);
-imshow(mid);
-     uiwait(msgbox('Zoom into the area of interest on the image, press enter, click on the desired pixel, then press enter again','','modal'));
+figure(1); clf(1)
+    subplot(2,1,1)
+    imshow(mid)
+    subplot(2,1,2)
+    imshow(mid-last)
+     uiwait(msgbox('Zoom into the area of intereston the bottom image, press enter, click on the desired pixel, then press enter again','','modal'));
 pause
 hold on
-readpix = impixel(mid);
+readpix = impixel(mid-last);
 hold off
 red = readpix(1); % Red value
 green = readpix(2); % Green Value
 blue = readpix(3); % Blue value
 
 %
-p = 0.25;
+p = 0.35;
 rdiff = p*red; % Red
 gdiff = p*green; % Green
 bdiff = p*blue; % Blue
@@ -41,32 +46,32 @@ FirstFrame=readFrame(vid); % First Frame as a background
 trackedObj = zeros(vidHeight,vidWidth,LastFrame);
 newrgb = zeros(vidHeight,vidWidth,LastFrame);
 [m, n, q] = size(trackedObj);
-% 
+
 % for i = 1:q-1
-%     currentFrame = readFrame(vid); %- FirstFrame;
+%     currentFrame = readFrame(vid)-last; %- FirstFrame;
 %     redchan = currentFrame(:,:,1); % Red Channel
 %     greenchan = currentFrame(:,:,2); % Green Channel
 %     bluechan = currentFrame(:,:,3); % Blue Channel
 %     i
 %     % This loop finds black pixels and makes them similar to the board
-%     for jj = 1:m
-%         for kk = 1:n
-% %             redpix = redchan(j,k,i);
-% %             greenpix = greenchan(j,k,i);
-% %             bluepix = bluechan(j,k,i);
-%             if (redchan(jj,kk) <= 50 && greenchan(jj,kk) <= 50 && bluechan(jj,kk) <= 50)
-%                 redchan(jj,kk,i) = 140;
-%                 greenchan(jj,kk,i) = 140;
-%                 bluechan(jj,kk,i) = 130;
-%             end
-%         end
-%     end
-%     newrgb = cat(3,redchan,greenchan,bluechan);
+% %     for jj = 1:m
+% %         for kk = 1:n
+% % %             redpix = redchan(j,k,i);
+% % %             greenpix = greenchan(j,k,i);
+% % %             bluepix = bluechan(j,k,i);
+% %             if (redchan(jj,kk) <= 50 && greenchan(jj,kk) <= 50 && bluechan(jj,kk) <= 50)
+% %                 redchan(jj,kk,i) = 140;
+% %                 greenchan(jj,kk,i) = 140;
+% %                 bluechan(jj,kk,i) = 130;
+% %             end
+% %         end
+% %     end
+% %     newrgb = cat(3,redchan,greenchan,bluechan);
 % end
 
 for i = 1:q-1
     
-    currentFrame = readFrame(vid);% 
+    currentFrame = readFrame(vid) -last;%- FirstFrame;
      redchan = currentFrame(:,:,1); % Red Channel
      greenchan = currentFrame(:,:,2); % Green Channel
      bluechan = currentFrame(:,:,3); % Blue Channel
@@ -88,14 +93,14 @@ for i = 1:q-1
             end
         end
     end
-   
+    
 %     figure(2); clf(2)
 %     subplot(2,1,1)
 %     imshow(currentFrame)
 %     subplot(2,1,2)
 %     imshow(trackedObj(:,:,i))
 %     pause
-end 
+end
 
 % Centroid Finder
 % This component of the code takes the black and white series of matrices
@@ -113,8 +118,11 @@ for i=1:q % runs for every matrix in the set
     A(:,:,i)=single(trackedObj(:,:,i)); % this flattens the ith matrix
     s=regionprops(A(:,:,i),'centroid'); % this calculates the centroid
     if length(s)>0 % if there is a centroid found store it in the following way
-    x(i)=s.Centroid(1); % stores x component
-    y(i)=s.Centroid(2); % stores y component
+        x=s.Centroid(1); % checks x component
+        y=s.Centroid(2); % checks y component
+        if x>0 && y>0 % cetroids of (0,0) don't aid in the solution
+            x(i)=x; % stores x value
+            y(i)=y; % stores y value
+        end
     end
 end
-

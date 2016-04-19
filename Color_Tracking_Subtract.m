@@ -75,7 +75,7 @@ for i = 1:q-1
      redchan = currentFrame(:,:,1); % Red Channel
      greenchan = currentFrame(:,:,2); % Green Channel
      bluechan = currentFrame(:,:,3); % Blue Channel
-     i
+     i;
     %imshow(newrgb)
     %redch = 
     % This loop finds the pixels within the range of the selected color and
@@ -101,6 +101,16 @@ for i = 1:q-1
 %     imshow(trackedObj(:,:,i))
 %     pause
     
+
+    % Centroid Finding
+%     a=currentFrame;
+%     [x1,y1,z1]=size(a);
+%     level=graythresh(a);
+%     BW=im2bw(a,level);
+%     background = imdilate(BW, ones(x1,y1,z1));
+%     diff = imabsdiff(BW, background);
+    s=regionprops(trackedObj,'centroid');
+    centroids=cat(1, s.Centroid);
 end
 
 % Find Centroids in each frame
