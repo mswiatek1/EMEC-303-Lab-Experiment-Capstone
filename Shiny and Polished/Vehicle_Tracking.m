@@ -105,8 +105,9 @@ newrgb = zeros(vidHeight,vidWidth,LastFrame);
 [m, n, q] = size(trackedObj);
 timestep = vid.Duration/LastFrame;
 
+h = waitbar(0,'Initializing waitbar...');
 for i = 1:q-1
-    
+    waitbar(i/(q-1),h,sprintf('%i%% along...',i/(q-1)*100))
     currentFrame = readFrame(vid);% 
      redchan = currentFrame(:,:,1); % Red Channel
      greenchan = currentFrame(:,:,2); % Green Channel
