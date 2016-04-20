@@ -152,12 +152,12 @@ for i=1:q-1 % runs for every matrix in the set
         y(i)=s.Centroid(2); % checks y component
     end
 end
-for i=2:q-2 % loop to find (0,0) centroids and readjust them through linear interpolation
-    if x(i)==0 && y(i)==0
-        x(i)=abs((x(i-1)-x(i+1))/2); % new x value 
-        y(i)=abs((y(i-1)-y(i+1))/2); % new y value
-    end
-end
+% for i=2:q-2 % loop to find (0,0) centroids and readjust them through linear interpolation
+%     if x(i)==0 && y(i)==0
+%         x(i)=abs((x(i-1)-x(i+1))/2); % new x value 
+%         y(i)=abs((y(i-1)-y(i+1))/2); % new y value
+%     end
+% end
 for i=1:q-1 % loop to cancel out any remaining (0,0) 
     if x(i)==0 % checks if x is 0
        x(i)=NaN; % deletes x
@@ -171,8 +171,8 @@ xc=x(4*j:q-j); % adjusted x values
 yc=y(4*j:q-j); % adjusted y values
 
 % Convert from camera pixels to units selected previously
-newx = Calibration*xc;
-newy = -Calibration*yc;
+newx = Calibration*x;
+newy = -Calibration*y;
 [a, b] = size(newx);
 
 % Plot the path the car travels
@@ -209,15 +209,15 @@ end
 % Plot the velocity of the car
 figure(4); clf(4);
 subplot(3,1,1)
-plot(time,posmag);
+scatter(time,posmag,'.');
 title('Position')
 ylabel(sprintf('%s', units))
 subplot(3,1,2)
-plot(time,velmag);
+scatter(time,velmag,'.');
 title('Velocity')
 ylabel(sprintf('%s per second', units))
 subplot(3,1,3)
-plot(time,accmag);
+scatter(time,accmag,'.');
 title('Acceleration')
 xlabel('seconds')
 ylabel(sprintf('%s per second^2', units))
