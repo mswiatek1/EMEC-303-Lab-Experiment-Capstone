@@ -166,6 +166,9 @@ for i=1:q-1 % loop to cancel out any remaining (0,0)
        y(i)=NaN; % deletes y
     end
 end
+j=10; % adjust value to negate 0 values at begining/end of clip
+xc=x(4*j:q-j); % adjusted x values
+yc=y(4*j:q-j); % adjusted y values
 
 % Convert from camera pixels to units selected previously
 newx = Calibration*xc;
