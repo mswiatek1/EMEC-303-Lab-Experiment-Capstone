@@ -88,7 +88,7 @@ uiwait(msgbox('Click a point above the top of the track THEN click a point below
  width=(b-a);
  height=(d-c);
 I2=imcrop(bpoint,[xmin ymin width height]);
-%%
+
 I3=imadjust(I2,[.2 .3 0; .6 .7 1],[]);
 red = I3(:,:,1); % Red channel
 green = I3(:,:,2); % Green channel
