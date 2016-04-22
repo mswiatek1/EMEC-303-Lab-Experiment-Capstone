@@ -30,9 +30,7 @@ I = im2bw(mid,level); % Convert image to black and white (binary)
 % Insert image into figure
 
 [rows, columns] = size(I);
-% % % figure(1); clf(1);
-% % % imshow(I); % Shows frame grab converted to black and white
-% % % set(gcf, 'name','Spatial Calibration','numbertitle','off');
+
 units = 'pixels';
 Calibration = 1.0;
 button = 1;
@@ -47,7 +45,7 @@ while button ~= 6
         figure(1); clf(1);
         imshow(I); % Shows frame grab converted to black and white
         set(gcf, 'name','Spatial Calibration','numbertitle','off');
-        title('Left Click First Point; Right Click Last Point.');
+        uiwait(msgbox('Left Click the First Point then Right Click the Last Point','','modal'));
         [x,y,profile]=improfile();
         % Calculate Distance of line
         dip = sqrt((x(1)-x(end))^2 + (y(1)-y(end))^2);
