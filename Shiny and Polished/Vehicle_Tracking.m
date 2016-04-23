@@ -33,15 +33,49 @@ I = im2bw(mid,level); % Convert image to black and white (binary)
 
 units = 'pixels';
 Calibration = 1.0;
+NewFirstFrame = 1;
+NewLastFrame = LastFrame;
 button = 1;
-while button ~= 6
+while button ~= 8
     % User input of required action
-    button = menu('Select a Function','Measure','Calibrate','Select Color','Analysis','Automatic A in Dr. Owkes Class','Finish');
+    button = menu('Select a Function','Trim Video','Crop Video','Measure','Calibrate','Select Color','Analysis','Automatic A in Dr. Owkes Class','Finish');
     
-    if button == 6 % EXIT
+    if button == 8 % EXIT
         break; % End because user clicked exit
-    
-    elseif button == 1 % Measure
+        
+    elseif button == 1 % Trim Video
+        uiwait(msgbox({'Play through the video and find the first and last frame'...
+            'that correspond with where the car enters and leaves the field of view.'...
+            'Then, close the video, return to the command window and press enter.'...
+            'Enter the values of first and last frame into the dialog box.'...
+            'OR, if the video has already been trimmed, leave both cells blank.'},'','modal'));
+        implay(filename)
+        pause
+        Prompt0 = {'Enter First Frame Number','Enter Last Frame Number'};
+        
+        UserInput0 = inputdlg(Prompt0,'Enter a known distance',2);
+            NewFirstFrame = str2double(UserInput0{1});
+            NewLastFrame = str2double(UserInput0{2});
+        if isnan(NewFirstFrame) == 1
+            NewFirstFrame = 1;
+            NewLastFrame = LastFrame;
+        end
+                
+    elseif button == 2 % Crop Video
+       figure(2); clf(2);
+       bpoint=imread(filename);
+       imshow(filename);
+         uiwait(msgbox('Click a point at the upper left corner of the track THEN click a point on the lower right corner of the track','','modal'));
+             [x,y]=ginput(2);
+       left = x(1); 
+       right = x(2);
+       top = y(1);
+       bottom = y(2);
+       width = right - left;
+       height = bottom - top;
+
+        
+    elseif button == 3 % Measure
         figure(1); clf(1);
         imshow(I); % Shows frame grab converted to black and white
         set(gcf, 'name','Spatial Calibration','numbertitle','off');
@@ -50,7 +84,7 @@ while button ~= 6
         % Calculate Distance of line
         dip = sqrt((x(1)-x(end))^2 + (y(1)-y(end))^2);
     
-    elseif button == 2 % Calibration
+    elseif button == 4 % Calibration
         Prompt = {'Enter True Size','Enter Units'};
         defaultVals = {'12','Inches'};
         UserInput = inputdlg(Prompt,'Enter a known distance',2,defaultVals);
@@ -74,7 +108,7 @@ while button ~= 6
         caption = sprintf('The distance = %0.3f pixels = %0.2f %s', dip, RealDistance, units);
         title(caption);
     
-    elseif button == 3
+    elseif button == 5 % Select Color
         figure(2); clf(2);
         imshow(mid);
         uiwait(msgbox('Zoom into the car on the image, press enter, click on the desired pixel, then press enter again','','modal'));
@@ -86,7 +120,7 @@ while button ~= 6
         green = readpix(2); % Green Value
         blue = readpix(3); % Blue value
     
-    elseif button == 4
+    elseif button == 6 % Analysis
         Prompt2 = {'Enter Range Factor'};
         defaultVals2 = {'0.25'};
         UserInput2 = inputdlg(Prompt2,'Enter a color range factor (0.25 is recommended to start with)',1,defaultVals2);        
@@ -94,21 +128,21 @@ while button ~= 6
         rdiff = p*red; % Red
         gdiff = p*green; % Green
         bdiff = p*blue; % Blue
-        vid.CurrentTime = 0; % Rewind
+        vid.CurrentTime = (NewFirstFrame-1)/vid.FrameRate; % Rewind
         FirstFrame = readFrame(vid); % First Frame as a background
-        trackedObj = zeros(vidHeight,vidWidth,LastFrame);
-        newrgb = zeros(vidHeight,vidWidth,LastFrame);
+        trackedObj = zeros(vidHeight,vidWidth,NewLastFrame);
+        newrgb = zeros(vidHeight,vidWidth,NewLastFrame);
         [m, n, q] = size(trackedObj);
         timestep = vid.Duration/LastFrame;
 
         A=zeros(size(single(trackedObj))); % initializes flattened video
-        x=zeros(1,q-1); % initializes x component storage
-        y=zeros(1,q-1); % initializes y component storage
+        x=zeros(1,NewLastFrame-1); % initializes x component storage
+        y=zeros(1,NewLastFrame-1); % initializes y component storage
         qstart = NaN;
         h = waitbar(0,'Initializing waitbar...');
         set(h,'Name','Progress Bar');
-        for i = 1:q-1
-            waitbar(i/(q-1),h,sprintf('%0.2f%% along...',i/(q-1)*100))
+        for i = NewFirstFrame:NewLastFrame-1
+            waitbar(i/(NewLastFrame-1),h,sprintf('%0.2f%% along...',i/(NewLastFrame-1)*100))
 
             currentFrame = readFrame(vid);% 
              redchan = currentFrame(:,:,1); % Red Channel
@@ -118,6 +152,7 @@ while button ~= 6
             % This loop finds the pixels within the range of the selected color and
             % marks them as a point if they are within the range.  If not, it is
             % set as zero
+            
             for j = 1:m
                 for k = 1:n
                     if (redchan(j,k) <= red+rdiff && redchan(j,k) >= red-rdiff && ...
@@ -165,11 +200,11 @@ while button ~= 6
         posmag = zeros(1,b-1);
         velmag = zeros(1,b-1);
         time = zeros(1,b-1);
-        for i = 1:b-2
+        for i = NewFirstFrame:b-2
             time(i+1) = time(i) + timestep;
         end
-        for i = 1:b-1
-            posmag(i) = sqrt((newx(i+1)-newx(i)).^2+(newy(i+1)-newy(i)).^2);
+        for i = NewFirstFrame:b-1
+            posmag(i) = sqrt((newx(i)).^2+(newy(i)).^2);
         end
 
         % Plot the path and position of the car
@@ -183,8 +218,8 @@ while button ~= 6
         scatter(time,posmag,'.');
         title('Position vs. Time')
         ylabel(sprintf('%s', units))
-        xlabel('seconds')
-    elseif button == 5
+        xlabel('Seconds')
+    elseif button == 7
         errordlg('Sorry, the portion of code you are trying to access is no longer valid.  You will have to earn an A the hard way.','It was worth a shot!');
     end
     
