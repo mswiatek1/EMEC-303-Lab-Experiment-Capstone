@@ -36,11 +36,11 @@ Calibration = 1.0;
 NewFirstFrame = 1;
 NewLastFrame = LastFrame;
 button = 1;
-while button ~= 8
+while button ~= 7
     % User input of required action
-    button = menu('Select a Function','Trim Video','Crop Video','Measure','Calibrate','Select Color','Analysis','Automatic A in Dr. Owkes Class','Finish');
+    button = menu('Select a Function','Trim Video','Measure','Calibrate','Select Color','Analysis','Automatic A in Dr. Owkes Class','Finish');
     
-    if button == 8 % EXIT
+    if button == 7 % EXIT
         break; % End because user clicked exit
         
     elseif button == 1 % Trim Video
@@ -61,21 +61,7 @@ while button ~= 8
             NewLastFrame = LastFrame;
         end
                 
-    elseif button == 2 % Crop Video
-       figure(2); clf(2);
-       bpoint=imread(filename);
-       imshow(filename);
-         uiwait(msgbox('Click a point at the upper left corner of the track THEN click a point on the lower right corner of the track','','modal'));
-             [x,y]=ginput(2);
-       left = x(1); 
-       right = x(2);
-       top = y(1);
-       bottom = y(2);
-       width = right - left;
-       height = bottom - top;
-
-        
-    elseif button == 3 % Measure
+    elseif button == 2 % Measure
         figure(1); clf(1);
         imshow(I); % Shows frame grab converted to black and white
         set(gcf, 'name','Spatial Calibration','numbertitle','off');
@@ -84,7 +70,7 @@ while button ~= 8
         % Calculate Distance of line
         dip = sqrt((x(1)-x(end))^2 + (y(1)-y(end))^2);
     
-    elseif button == 4 % Calibration
+    elseif button == 3 % Calibration
         Prompt = {'Enter True Size','Enter Units'};
         defaultVals = {'12','Inches'};
         UserInput = inputdlg(Prompt,'Enter a known distance',2,defaultVals);
@@ -108,7 +94,7 @@ while button ~= 8
         caption = sprintf('The distance = %0.3f pixels = %0.2f %s', dip, RealDistance, units);
         title(caption);
     
-    elseif button == 5 % Select Color
+    elseif button == 4 % Select Color
         figure(2); clf(2);
         imshow(mid);
         uiwait(msgbox('Zoom into the car on the image, press enter, click on the desired pixel, then press enter again','','modal'));
@@ -120,7 +106,7 @@ while button ~= 8
         green = readpix(2); % Green Value
         blue = readpix(3); % Blue value
     
-    elseif button == 6 % Analysis
+    elseif button == 5 % Analysis
         Prompt2 = {'Enter Range Factor'};
         defaultVals2 = {'0.25'};
         UserInput2 = inputdlg(Prompt2,'Enter a color range factor (0.25 is recommended to start with)',1,defaultVals2);        
@@ -141,6 +127,7 @@ while button ~= 8
         qstart = NaN;
         h = waitbar(0,'Initializing waitbar...');
         set(h,'Name','Progress Bar');
+        
         for i = NewFirstFrame:NewLastFrame-1
             waitbar(i/(NewLastFrame-1),h,sprintf('%0.2f%% along...',i/(NewLastFrame-1)*100))
 
@@ -193,10 +180,19 @@ while button ~= 8
         newy = -Calibration*y;
         [a, b] = size(newx);
 
+        % Reposition newx and newy so the beginning of the track/ car is
+        % located at (0,0)
+        newx2 = zeros(1,b-1);
+        newy2 = zeros(1,b-1);
+        
+        for i = NewFirstFrame:b-1
+           newx2(i) = newx(i) - newx(NewFirstFrame);
+           newy2(i) = newy(i) - newy(NewFirstFrame);
+        end
+        
+        
         % Velocity
         % Preallocate
-        xvel = zeros(1,b-1);
-        yvel = zeros(1,b-1);
         posmag = zeros(1,b-1);
         velmag = zeros(1,b-1);
         time = zeros(1,b-1);
@@ -204,13 +200,13 @@ while button ~= 8
             time(i+1) = time(i) + timestep;
         end
         for i = NewFirstFrame:b-1
-            posmag(i) = sqrt((newx(i)).^2+(newy(i)).^2);
+            posmag(i) = sqrt((newx2(i)).^2+(newy2(i)).^2);
         end
 
         % Plot the path and position of the car
         figure(4); clf(4);
         subplot(2,1,1)
-        plot(newx,newy);
+        plot(newx2,newy2);
         title('Path of the car')
         xlabel(sprintf('%s', units))
         ylabel(sprintf('%s', units))
@@ -219,7 +215,7 @@ while button ~= 8
         title('Position vs. Time')
         ylabel(sprintf('%s', units))
         xlabel('Seconds')
-    elseif button == 7
+    elseif button == 6
         errordlg('Sorry, the portion of code you are trying to access is no longer valid.  You will have to earn an A the hard way.','It was worth a shot!');
     end
     
