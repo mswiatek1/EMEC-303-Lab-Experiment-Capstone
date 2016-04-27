@@ -23,11 +23,8 @@ vid.CurrentTime = LastTime/2;
 LastFrame = floor(LastTime*vid.FrameRate);
 mid = readFrame(vid); % Reads the frame at the middle timestep in video for analyzing
 
-%
 level = graythresh(mid); % Threshold level for black/ white
 I = im2bw(mid,level); % Convert image to black and white (binary)
-
-% Insert image into figure
 
 [rows, columns] = size(I);
 
@@ -36,11 +33,11 @@ Calibration = 1.0;
 NewFirstFrame = 1;
 NewLastFrame = LastFrame;
 button = 1;
-while button ~= 7
+while button ~= 6
     % User input of required action
-    button = menu('Select a Function','Trim Video','Measure','Calibrate','Select Color','Analysis','Automatic A in Dr. Owkes Class','Finish');
+    button = menu('Select a Function','Trim Video','Measure','Calibrate','Select Color','Analysis','Finish');
     
-    if button == 7 % EXIT
+    if button == 6 % EXIT
         break; % End because user clicked exit
         
     elseif button == 1 % Trim Video
@@ -53,7 +50,7 @@ while button ~= 7
         pause
         Prompt0 = {'Enter First Frame Number','Enter Last Frame Number'};
         
-        UserInput0 = inputdlg(Prompt0,'Enter a known distance',2);
+        UserInput0 = inputdlg(Prompt0,'Enter the first and last frame number',2);
             NewFirstFrame = str2double(UserInput0{1});
             NewLastFrame = str2double(UserInput0{2});
         if isnan(NewFirstFrame) == 1
@@ -132,9 +129,9 @@ while button ~= 7
             waitbar(i/(NewLastFrame-1),h,sprintf('%0.2f%% along...',i/(NewLastFrame-1)*100))
 
             currentFrame = readFrame(vid);% 
-             redchan = currentFrame(:,:,1); % Red Channel
-             greenchan = currentFrame(:,:,2); % Green Channel
-             bluechan = currentFrame(:,:,3); % Blue Channel
+            redchan = currentFrame(:,:,1); % Red Channel
+            greenchan = currentFrame(:,:,2); % Green Channel
+            bluechan = currentFrame(:,:,3); % Blue Channel
 
             % This loop finds the pixels within the range of the selected color and
             % marks them as a point if they are within the range.  If not, it is
@@ -188,13 +185,10 @@ while button ~= 7
         for i = NewFirstFrame:b-1
            newx2(i) = newx(i) - newx(NewFirstFrame);
            newy2(i) = newy(i) - newy(NewFirstFrame);
-        end
+        end 
         
-        
-        % Velocity
         % Preallocate
         posmag = zeros(1,b-1);
-        velmag = zeros(1,b-1);
         time = zeros(1,b-1);
         for i = NewFirstFrame:b-2
             time(i+1) = time(i) + timestep;
@@ -215,10 +209,7 @@ while button ~= 7
         title('Position vs. Time')
         ylabel(sprintf('%s', units))
         xlabel('Seconds')
-    elseif button == 6
-        errordlg('Sorry, the portion of code you are trying to access is no longer valid.  You will have to earn an A the hard way.','It was worth a shot!');
     end
-    
 end
 
 
