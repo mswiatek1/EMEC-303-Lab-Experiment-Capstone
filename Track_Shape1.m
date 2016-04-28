@@ -19,17 +19,16 @@ I = im2bw(img,level); % Convert image to black and white (binary)
 
 [rows, columns] = size(I);
 figure(1); clf(1);
-subplot(2,1,1);
 imshow(I); % Shows frame grab converted to black and white
 set(gcf, 'name','Spatial Calibration','numbertitle','off');
 
 units = 'pixels';
 Calibration = 1.0;
 button = 1;
-while button ~= 4
+while button ~= 3
     % User input of required action
-    button = menu('Pick One','Measure','Calibrate','Automatic A in Dr. Owkes Class','Proceed');
-    if button == 4 % EXIT
+    button = menu('Pick One','Measure','Calibrate','Proceed');
+    if button == 3 % EXIT
         break; % End because user clicked exit
     elseif button == 1 % Measure
         %subplot(2,1,1);
@@ -37,9 +36,6 @@ while button ~= 4
         [x,y,profile]=improfile();
         % Calculate Distance of line
         dip = sqrt((x(1)-x(end))^2 + (y(1)-y(end))^2);
-        subplot(2,1,2);
-        plot(profile);
-        grid on;
     elseif button == 2 % Calibration
         Prompt = {'Enter True Size','Enter Units'};
         defaultVals = {'12','Inches'};
@@ -59,16 +55,12 @@ while button ~= 4
             continue; % This skips to the end of the loop
         end
         Calibration = RealLength/dip;
-    elseif button == 3
-        errordlg('Sorry, the portion of code you are trying to access is no longer valid.  You will have to earn an A the hard way.','It was worth a shot!');
     end
     
 end
     RealDistance = dip*Calibration;
     caption = sprintf('Intensity Profile Along Line \nThe distance = %f pixels = %f %s', dip, RealDistance, units);
     title(caption);
-    ylabel('Color');
-    xlabel('Pixels Along Line');
 
 figure(2); clf(2);
 bpoint=imread(filename);
