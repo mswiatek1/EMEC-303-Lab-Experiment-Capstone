@@ -1,4 +1,4 @@
-function createfigure(X1, Y1,d)
+function createfigure(X1, Y1,d,e)
 %CREATEFIGURE(X1, Y1)
 %  X1:  scatter x
 %  Y1:  scatter y
@@ -34,7 +34,7 @@ end
 
 % Find x values for plotting the fit based on xlim
 axesLimits1 = xlim(axes1);
-xplot1 = linspace(axesLimits1(1), axesLimits1(2)-5);
+xplot1 = linspace(axesLimits1(1), e);
 % Preallocate for "Show equations" coefficients
 coeffs1 = cell(1,1);
 fitResults1 = polyfit(xdata1,ydata1,d);% Find coefficients for polynomial 
@@ -52,9 +52,6 @@ showEquations(fittypesArray1,coeffs1,2,axes1);
 fitLine1 = plot(xplot1,yplot1,'DisplayName','   10th degree',...% Plot the fit
     'Tag','10th degree',...
     'Parent',axes1);
-
-% Set new line in proper position
-setLineOrder(axes1,fitLine1,scatter1);
 
 % Create xlabel
 xlabel('Inches');
