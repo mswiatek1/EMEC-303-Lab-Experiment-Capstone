@@ -19,7 +19,6 @@ I = im2bw(img,level); % Convert image to black and white (binary)
 
 [rows, columns] = size(I);
 figure(1); clf(1);
-subplot(2,1,1);
 imshow(I); % Shows frame grab converted to black and white
 set(gcf, 'name','Spatial Calibration','numbertitle','off');
 
@@ -37,8 +36,6 @@ while button ~= 4
         [x,y,profile]=improfile();
         % Calculate Distance of line
         dip = sqrt((x(1)-x(end))^2 + (y(1)-y(end))^2);
-        subplot(2,1,2);
-        plot(profile);
         grid on;
     elseif button == 2 % Calibration
         Prompt = {'Enter True Size','Enter Units'};
