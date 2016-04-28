@@ -126,9 +126,9 @@ title('Shape of the Track')
 xlabel(sprintf('%s', units))
 ylabel(sprintf('%s', units))
 hold on
-x = inputdlg('Enter degree of polynomial',...
+degree = inputdlg('Enter degree of polynomial',...
              'Line Fitting', [1 50]);
-d=x(1,1);
+d=str2num(char(degree));
 createfigure(newx,newy,d,newx(end))
 % hold on
 % xplot1 = linspace(0,b);
