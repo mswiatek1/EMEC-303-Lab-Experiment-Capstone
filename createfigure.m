@@ -34,9 +34,21 @@ end
 
 % Find x values for plotting the fit based on xlim
 axesLimits1 = xlim(axes1);
-xplot1 = linspace(axesLimits1(1), axesLimits1(2));
+xplot1 = linspace(axesLimits1(1), axesLimits1(2)-10);
+% Preallocate for "Show equations" coefficients
+coeffs1 = cell(1,1);
 fitResults1 = polyfit(xdata1,ydata1,d);% Find coefficients for polynomial 
 yplot1 = polyval(fitResults1,xplot1);
+
+% Save type of fit for "Show equations"
+fittypesArray1(1) = 10;
+
+% Save coefficients for "Show Equation"
+coeffs1{1} = fitResults1;
+
+% "Show equations" was selected
+showEquations(fittypesArray1,coeffs1,2,axes1);
+
 fitLine1 = plot(xplot1,yplot1,'DisplayName','   10th degree',...% Plot the fit
     'Tag','10th degree',...
     'Parent',axes1);
@@ -53,29 +65,8 @@ title('Shape of the Track');
 % Create ylabel
 ylabel('Inches');
 
-% Uncomment the following line to preserve the X-limits of the axes
-% xlim(axes1,[0 86.7840637831625]);
-% Uncomment the following line to preserve the Y-limits of the axes
-% ylim(axes1,[-16.4953869915198 0]);
-% Create legend
+
 legend(axes1,'show');
 
-%-------------------------------------------------------------------------%
-function setLineOrder(axesh1, newLine1, associatedLine1)
-%SETLINEORDER(AXESH1,NEWLINE1,ASSOCIATEDLINE1)
-%  Set line order
-%  AXESH1:  axes
-%  NEWLINE1:  new line
-%  ASSOCIATEDLINE1:  associated line
 
-% Get the axes children
-hChildren = get(axesh1,'Children');
-% Remove the new line
-hChildren(hChildren==newLine1) = [];
-% Get the index to the associatedLine
-lineIndex = find(hChildren==associatedLine1);
-% Reorder lines so the new line appears with associated data
-hNewChildren = [hChildren(1:lineIndex-1);newLine1;hChildren(lineIndex:end)];
-% Set the children:
-set(axesh1,'Children',hNewChildren);
 
