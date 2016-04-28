@@ -25,10 +25,10 @@ set(gcf, 'name','Spatial Calibration','numbertitle','off');
 units = 'pixels';
 Calibration = 1.0;
 button = 1;
-while button ~= 4
+while button ~= 3
     % User input of required action
-    button = menu('Pick One','Measure','Calibrate','Automatic A in Dr. Owkes Class','Proceed');
-    if button == 4 % EXIT
+    button = menu('Pick One','Measure','Calibrate','Proceed');
+    if button == 3 % EXIT
         break; % End because user clicked exit
     elseif button == 1 % Measure
                 title('Left Click First Point; Right Click Last Point.');
@@ -54,13 +54,10 @@ while button ~= 4
             continue; % This skips to the end of the loop
         end
         Calibration = RealLength/dip;
-    elseif button == 3
-        errordlg('Sorry, the portion of code you are trying to access is no longer valid.  You will have to earn an A the hard way.','It was worth a shot!');
     end
-    
 end
     RealDistance = dip*Calibration;
-    caption = sprintf('Intensity Profile Along Line \nThe distance = %f pixels = %f %s', dip, RealDistance, units);
+    caption = sprintf('Intensity Profile Along Line \nThe distance = %0.3f pixels = %0.2f %s', dip, RealDistance, units);
     title(caption);
  
 figure(2); clf(2);
